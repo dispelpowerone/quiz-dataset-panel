@@ -3,6 +3,7 @@ import {
   TextField,
 } from '@mui/material';
 import ImageIcon from '@mui/icons-material/Image';
+import CheckIcon from '@mui/icons-material/Check';
 import { useLocation } from 'react-router-dom';
 import Text from './Text';
 import { PrebuildQuestion } from '../libs/model';
@@ -16,33 +17,26 @@ export function Question() {
   const renderImage = (image?: string) => {
     return (
       <>
-        {image && <Box component='img' sx={style.image} src={`/public/images/${image}`} />}
-        {!image && <ImageIcon sx={style.image} />}
+        {image &&
+          <>
+            <Box component='img' sx={style.image} src={`/public/images/${image}`} />
+            <Box component='img' sx={style.image} src={`/public/images-orig/${image}`} />
+          </>
+        }
       </>
-    );
-  };
-
-  const renderText = (textName: string, content, disabled: boolean) => {
-    return (
-      <TextField
-        label={textName}
-        defaultValue={content}
-        sx={style.text}
-        variant="outlined"
-        disabled={disabled}
-        multiline
-      />
     );
   };
 
   return (
     <Box sx={style.container}>
+      <h2>Question #{question.question_id}</h2>
       {renderImage(question.image)}
-      {renderText('TestId', question.test_id, true)}
-      {renderText('QuestionId', question.question_id, true)}
       <Text name={'QuestionText'} text={question.text} />
       {question.answers.map((answer, index) =>
-        <Text name={`Answer ${index + 1}`} text={answer.text} />
+        <>
+          {answer.is_right_answer && <CheckIcon />}
+          <Text name={`Answer ${index + 1}`} text={answer.text} />
+        </>
       )}
     </Box>
   );
@@ -55,6 +49,10 @@ const style = {
     width: '100%',
     maxWidth: 640,
     bgcolor: 'background.paper',
+    padding: 4,
+    margin: 2,
+    borderRadius: 1,
+    boxShadow: 2,
   },
   image: {
     height: 150,

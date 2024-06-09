@@ -74,6 +74,12 @@ export function Text({
               multiline
               value={textActual.localizations.EN}
               disabled
+              InputLabelProps={{
+                style: {
+                  color: 'black',
+                  fontWeight: 1000,
+                },
+              }}
             />
             {!editMode &&
               <Button
@@ -90,6 +96,19 @@ export function Text({
         <ListItem key={'TextEditableView'}>
           <Collapse in={editMode} sx={{flex: 1}} timeout="auto" unmountOnExit>
             <Container disableGutters sx={style.mainContainer}>
+              {/* Original */}
+              <List subheader={<ListSubheader>Original</ListSubheader>}>
+                <ListItem>
+                  <TextField
+                    sx={style.text}
+                    label={'EN'}
+                    variant="outlined"
+                    defaultValue={textMutableRef.current.original?.EN}
+                    multiline
+                    disabled
+                  />
+                </ListItem>
+              </List>
               {/* Localizations */}
               <List subheader={<ListSubheader>Localizations</ListSubheader>}>
                 {Object.entries(textMutableRef.current.localizations).map(([lang, content]) => {
@@ -106,19 +125,6 @@ export function Text({
                     </ListItem>
                   );
                 })}
-              </List>
-              {/* Original */}
-              <List subheader={<ListSubheader>Original</ListSubheader>}>
-                <ListItem>
-                  <TextField
-                    sx={style.text}
-                    label={'EN'}
-                    variant="outlined"
-                    defaultValue={textMutableRef.current.original?.EN}
-                    multiline
-                    disabled
-                  />
-                </ListItem>
               </List>
               {/* Control buttons */}
               <Container disableGutters sx={style.controlsContainer}>

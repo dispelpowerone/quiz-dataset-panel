@@ -44,14 +44,22 @@ export function TestsPreview() {
 
   const renderText = (textName: string, content) => {
     return (
-      <TextField
-        label={textName}
-        defaultValue={content}
-        sx={style.text}
-        variant="outlined"
-        disabled
-        multiline
-      />
+      <ListItem key={'Position'}>
+        <TextField
+          label={textName}
+          defaultValue={content}
+          sx={style.text}
+          disabled
+          multiline
+          variant='outlined'
+          InputLabelProps={{
+            style: {
+              color: 'black',
+              fontWeight: 1000,
+            },
+          }}
+        />
+      </ListItem>
     );
   };
 
@@ -59,15 +67,17 @@ export function TestsPreview() {
     return (
       <ListItem key={test.test_id}>
         <Container disableGutters sx={style.testContainer}>
-          {renderText('TestId', test.test_id)}
-          {renderText('Position', test.position)}
+          <h2>Test #{test.test_id}</h2>
+          <List>
+            {renderText('Position', String(test.position))}
+          </List>
           <Container disableGutters sx={style.controlsContainer}>
             <Button
               sx={style.button}
               variant='contained'
               onClick={() => handleView(test.test_id)}
             >
-              VIEW
+              {'QUESTIONS > >'}
             </Button>
           </Container>
         </Container>

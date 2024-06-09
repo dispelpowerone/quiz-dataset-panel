@@ -57,6 +57,12 @@ export function QuestionsPreview() {
         variant="outlined"
         disabled
         multiline
+        InputLabelProps={{
+          style: {
+            color: 'black',
+            fontWeight: 1000,
+          },
+        }}
       />
     );
   };
@@ -65,15 +71,22 @@ export function QuestionsPreview() {
     return (
       <ListItem key={question.question_id}>
         <Container disableGutters sx={style.questionContainer}>
+          <h2>Question #{question.question_id}</h2>
           {question.image &&
-            <Box
-              component='img'
-              sx={style.image}
-              src={`/public/images/${question.image}`}
-            />
+            <>
+              <Box
+                component='img'
+                sx={style.image}
+                src={`/public/images/${question.image}`}
+              />
+              <Box
+                component='img'
+                sx={style.image}
+                src={`/public/images-orig/${question.image}`}
+              />
+            </>
           }
           {renderText('TestId', question.test_id)}
-          {renderText('QuestionId', question.question_id)}
           {renderText('Text', question.text.localizations.EN)}
           <Container disableGutters sx={style.controlsContainer}>
             <Button
@@ -81,7 +94,7 @@ export function QuestionsPreview() {
               variant='contained'
               onClick={() => handleView(question)}
             >
-              VIEW
+              {'MORE > >'}
             </Button>
           </Container>
         </Container>
