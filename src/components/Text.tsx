@@ -11,6 +11,9 @@ import {
   ListItem,
   ListSubheader,
   Collapse,
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import cloneDeep from 'lodash/cloneDeep';
@@ -47,7 +50,13 @@ export function Text({
       setTextActual(cloneDeep(textMutableRef.current));
       setEditMode(false);
       setIsLoading(false);
+    }).catch(err => {
+      console.error(err);
     });
+  };
+
+  const handleCheckedStatus = (event) => {
+    textMutableRef.current.is_manually_checked = event.target.checked;
   };
 
   const getBoxStyle = () => {
@@ -80,22 +89,38 @@ export function Text({
                   fontWeight: 1000,
                 },
               }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Checkbox disabled checked={textActual.is_manually_checked} />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    {!editMode &&
+                      <Button variant='contained' onClick={handleEdit}>EDIT</Button>
+                    }
+                    {editMode &&
+                      <Button variant='outlined' onClick={handleCancel}>CANCEL</Button>
+                    }
+                  </InputAdornment>
+                ),
+              }}
             />
-            {!editMode &&
-              <Button
-                sx={style.button}
-                variant="contained"
-                onClick={handleEdit}
-              >
-                EDIT
-              </Button>
-            }
           </Container>
         </ListItem>
         {/* Text editable view */}
         <ListItem key={'TextEditableView'}>
           <Collapse in={editMode} sx={{flex: 1}} timeout="auto" unmountOnExit>
             <Container disableGutters sx={style.mainContainer}>
+              <FormControlLabel
+                control={
+                  <Checkbox defaultChecked={textMutableRef.current.is_manually_checked} />
+                }
+                onChange={handleCheckedStatus}
+                label={'Manually checked'}
+                sx={{ marginLeft: 1 }}
+              />
               {/* Original */}
               <List subheader={<ListSubheader>Original</ListSubheader>}>
                 <ListItem>

@@ -24,19 +24,19 @@ async function fetchData(path: string, args?): Promise {
 }
 
 export async function fetchTests(): Promise<[PrebuildTest]> {
-  return fetchData('/tests/get');
+  return await fetchData('/tests/get');
 }
 
 export async function fetchQuestions(testId: number): Promise<[PrebuildQuestion]> {
   console.assert(testId, `testId should be a number got ${testId}`);
-  return fetchData('/questions/get', {
+  return await fetchData('/questions/get', {
     test_id: testId,
   });
 }
 
 export async function updateText(text: PrebuildText): Promise<void> {
   console.assert(text !== undefined, `text argument should be defined`);
-  fetchData('/text/update', {
+  await fetchData('/text/update', {
     text: text,
   });
 }
