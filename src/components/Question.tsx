@@ -27,10 +27,30 @@ export function Question() {
     );
   };
 
+  const renderText = (textName: string, content) => {
+    return (
+      <TextField
+        label={textName}
+        defaultValue={content}
+        sx={style.text}
+        variant='outlined'
+        disabled
+        multiline
+        InputLabelProps={{
+          style: {
+            color: 'black',
+            fontWeight: 1000,
+          },
+        }}
+      />
+    );
+  }
+
   return (
     <Box sx={style.container}>
       <h2>Question #{question.question_id}</h2>
       {renderImage(question.image)}
+      {renderText('Image', question.image)}
       <Text name={'QuestionText'} text={question.text} />
       {question.answers.map((answer, index) =>
         <>
