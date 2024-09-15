@@ -27,6 +27,13 @@ export function TestsPreview() {
         setTests(tests);
         setIsLoading(false);
       }
+      const scrollPosition = sessionStorage.getItem('testsPreviewScrollPosition');
+      if (scrollPosition) {
+        setTimeout(() => {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }, 0);
+        sessionStorage.removeItem('testsPreviewScrollPosition');
+      }
     });
   }, []);
 
@@ -35,6 +42,7 @@ export function TestsPreview() {
   }
 
   const handleView = (testId: number) => {
+    sessionStorage.setItem('testsPreviewScrollPosition', window.pageYOffset);
     navigate('/QuestionsPreview', {
       state: {
         testId: testId,

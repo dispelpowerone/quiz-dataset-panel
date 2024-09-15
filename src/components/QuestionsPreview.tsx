@@ -33,6 +33,13 @@ export function QuestionsPreview() {
         setQuestions(questions);
         setIsLoading(false);
       }
+      const scrollPosition = sessionStorage.getItem('questionsPreviewScrollPosition');
+      if (scrollPosition) {
+        setTimeout(() => {
+            window.scrollTo(0, parseInt(scrollPosition));
+        }, 0);
+        sessionStorage.removeItem('questionsPreviewScrollPosition');
+      }
     });
   }, [testId]);
 
@@ -41,6 +48,7 @@ export function QuestionsPreview() {
   }
 
   const handleView = (question: PrebuildQuestion) => {
+    sessionStorage.setItem('questionsPreviewScrollPosition', window.pageYOffset);
     navigate('/Question', {
       state: {
         question: question,

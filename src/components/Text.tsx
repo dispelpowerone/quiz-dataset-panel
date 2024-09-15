@@ -79,7 +79,7 @@ export function Text({
             <TextField
               sx={style.text}
               label={name}
-              variant="outlined"
+              variant='outlined'
               multiline
               value={textActual.localizations.EN}
               disabled
