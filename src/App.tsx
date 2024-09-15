@@ -7,6 +7,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TestsPreview from './components/TestsPreview';
 import QuestionsPreview from './components/QuestionsPreview';
 import Question from './components/Question';
+import Boo from './screens/Boo';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path='/TestsPreview' element={<TestsPreview />}/>
         <Route path='/QuestionsPreview' element={<QuestionsPreview />}/>
         <Route path='/Question' element={<Question />}/>
+        <Route path='/Boo' element={<Boo />}/>
       </Routes>
     </Router>
   );
