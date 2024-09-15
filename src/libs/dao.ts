@@ -6,7 +6,7 @@ import {
 
 
 //const endpoint = 'http://127.0.0.1:8000';
-const endpoint = 'http://10.206.174.12:8000';
+const endpoint = 'http://192.168.1.58:8000';
 
 async function fetchData(path: string, args?): Promise {
   const requestOptions = {
@@ -38,5 +38,13 @@ export async function updateText(text: PrebuildText): Promise<void> {
   console.assert(text !== undefined, `text argument should be defined`);
   await fetchData('/text/update', {
     text: text,
+  });
+}
+
+export async function updateQuestionImage(questionId: number, image: string): Promise<void> {
+  console.assert(image !== undefined, `image argument should be defined`);
+  await fetchData('/question/image/update', {
+    question_id: questionId,
+    image: image,
   });
 }
