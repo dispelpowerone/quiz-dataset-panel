@@ -6,7 +6,7 @@ import {
 
 
 //const endpoint = 'http://127.0.0.1:8000';
-const endpoint = 'http://192.168.1.58:8000';
+const endpoint = 'http://192.168.1.33:8000';
 
 async function fetchData(path: string, args?): Promise {
   const requestOptions = {

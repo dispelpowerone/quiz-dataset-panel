@@ -1,14 +1,22 @@
+export type Language =
+  | 'EN'
+  | 'FR'
+  | 'ZH'
+  | 'ES'
+  | 'RU'
+  | 'FA'
+  | 'PA'
+  | 'PT';
 
 export interface TextLocalizations {
-  EN?: string
-  FR?: string
-  ZH?: string
-  ES?: string
-  RU?: string
-  FA?: string
-  PA?: string
-  KO?: string
-  PT?: string
+  EN?: Language
+  FR?: Language
+  ZH?: Language
+  ES?: Language
+  RU?: Language
+  FA?: Language
+  PA?: Language
+  PT?: Language
 }
 
 export interface PrebuildText {

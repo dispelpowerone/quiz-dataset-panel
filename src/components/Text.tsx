@@ -18,6 +18,7 @@ import {
 import CircularProgress from '@mui/material/CircularProgress';
 import cloneDeep from 'lodash/cloneDeep';
 import { PrebuildText } from '../libs/model';
+import type { Language } from '../libs/model';
 import { updateText } from '../libs/dao';
 
 
@@ -66,6 +67,22 @@ export function Text({
     return {...style.mainContainer, ...style.border};
   };
 
+  const checkTextWarnings = (text: PrebuildText, lang: Language) => {
+    if (text.localizations[lang] === text.original?.[lang]) {
+      return true;
+    }
+    return false;
+  };
+
+  const getTextStyle = (text: PrebuildText, lang: Language) => {
+    if (checkTextWarnings(text, lang)) {
+      return {
+        backgroundColor: '#ffd6c9',
+      }
+    }
+    return {};
+  };
+
   if (isLoading) {
     return <CircularProgress />;
   }
@@ -90,6 +107,7 @@ export function Text({
                 },
               }}
               InputProps={{
+                style: getTextStyle(textActual, 'EN'),
                 startAdornment: (
                   <InputAdornment position='start'>
                     <Checkbox disabled checked={textActual.is_manually_checked} />
@@ -145,6 +163,9 @@ export function Text({
                         variant="outlined"
                         defaultValue={content}
                         multiline
+                        InputProps={{
+                          style: getTextStyle(textMutableRef.current, lang),
+                        }}
                         onChange={e => (textMutableRef.current.localizations[lang] = e.target.value)}
                       />
                     </ListItem>
@@ -184,6 +205,13 @@ const style = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  extraContainer: {
+    position: 'absolute',
+    top: 1024,
+    left: 1024,
+    width: 100,
+    height: 100,
   },
   border: {
     borderRadius: 1,
