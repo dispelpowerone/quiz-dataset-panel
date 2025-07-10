@@ -62,7 +62,7 @@ export function QuestionsPreview() {
         label={textName}
         defaultValue={content}
         sx={style.text}
-        variant="outlined"
+        variant='outlined'
         disabled
         multiline
         InputLabelProps={{
@@ -95,7 +95,7 @@ export function QuestionsPreview() {
             </>
           }
           {renderText('TestId', question.test_id)}
-          {renderText('Text', question.text.localizations.EN)}
+          {renderText('Text', question.text.localizations.EN.content)}
           <Container disableGutters sx={style.controlsContainer}>
             <Button
               sx={style.button}

@@ -1,6 +1,7 @@
 import {
   useState,
   useRef,
+  useEffect,
 } from 'react';
 import {
   Box,
@@ -12,13 +13,12 @@ import {
   ListSubheader,
   Collapse,
   Checkbox,
-  FormControlLabel,
   InputAdornment,
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import TextLocalizationView from './TextLocalization';
 import cloneDeep from 'lodash/cloneDeep';
 import { PrebuildText } from '../libs/model';
-import type { Language } from '../libs/model';
 import { updateText } from '../libs/dao';
 
 
@@ -34,7 +34,17 @@ export function Text({
   const [isLoading, setIsLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [textActual, setTextActual] = useState(text);
+  const [textWarnings, setTextWarnings] = useState([]);
+  const [activeWarningsCount, setActiveWarningsCount] = useState(0);
   const textMutableRef = useRef(text);
+
+  useEffect(() => {
+    setTextWarnings(textActual.warnings);
+  }, [editMode, textActual]);
+
+  useEffect(() => {
+    setActiveWarningsCount(textWarnings.filter(w => !w.is_manually_checked).length);
+  }, [textWarnings]);
 
   const handleEdit = () => {
     textMutableRef.current = cloneDeep(textActual);
@@ -56,31 +66,18 @@ export function Text({
     });
   };
 
-  const handleCheckedStatus = (event) => {
-    textMutableRef.current.is_manually_checked = event.target.checked;
+  const handleUpdateWarning = (updatedWarning) => {
+    textMutableRef.current.warnings = textMutableRef.current.warnings.map(warning => {
+      return warning.text_warning_id === updatedWarning.text_warning_id ? updatedWarning : warning
+    });
+    setTextWarnings(textMutableRef.current.warnings);
   };
 
   const getBoxStyle = () => {
     if (!editMode) {
       return style.mainContainer;
     }
-    return {...style.mainContainer, ...style.border};
-  };
-
-  const checkTextWarnings = (text: PrebuildText, lang: Language) => {
-    if (text.localizations[lang] === text.original?.[lang]) {
-      return true;
-    }
-    return false;
-  };
-
-  const getTextStyle = (text: PrebuildText, lang: Language) => {
-    if (checkTextWarnings(text, lang)) {
-      return {
-        backgroundColor: '#ffd6c9',
-      }
-    }
-    return {};
+    return {...style.mainContainer, ...style.mainContainerBorder};
   };
 
   if (isLoading) {
@@ -98,7 +95,7 @@ export function Text({
               label={name}
               variant='outlined'
               multiline
-              value={textActual.localizations.EN}
+              value={textActual.localizations.EN.content}
               disabled
               InputLabelProps={{
                 style: {
@@ -107,7 +104,7 @@ export function Text({
                 },
               }}
               InputProps={{
-                style: getTextStyle(textActual, 'EN'),
+                style: activeWarningsCount ? style.warning : null,
                 startAdornment: (
                   <InputAdornment position='start'>
                     <Checkbox disabled checked={textActual.is_manually_checked} />
@@ -129,16 +126,8 @@ export function Text({
         </ListItem>
         {/* Text editable view */}
         <ListItem key={'TextEditableView'}>
-          <Collapse in={editMode} sx={{flex: 1}} timeout="auto" unmountOnExit>
-            <Container disableGutters sx={style.mainContainer}>
-              <FormControlLabel
-                control={
-                  <Checkbox defaultChecked={textMutableRef.current.is_manually_checked} />
-                }
-                onChange={handleCheckedStatus}
-                label={'Manually checked'}
-                sx={{ marginLeft: 1 }}
-              />
+          <Collapse in={editMode} sx={{ width: 'fit-content' }} timeout="auto" unmountOnExit>
+            <Container disableGutters sx={style.editContainer} maxWidth={false}>
               {/* Original */}
               <List subheader={<ListSubheader>Original</ListSubheader>}>
                 <ListItem>
@@ -146,27 +135,24 @@ export function Text({
                     sx={style.text}
                     label={'EN'}
                     variant="outlined"
-                    defaultValue={textMutableRef.current.original?.EN}
+                    defaultValue={textMutableRef.current.original?.EN.content}
                     multiline
                     disabled
                   />
                 </ListItem>
               </List>
               {/* Localizations */}
-              <List subheader={<ListSubheader>Localizations</ListSubheader>}>
-                {Object.entries(textMutableRef.current.localizations).map(([lang, content]) => {
+              <List subheader={<ListSubheader>Localizations</ListSubheader>} sx={{justifyContent: 'flex-start'}}>
+                {Object.entries(textMutableRef.current.localizations).map(([lang, localization]) => {
                   return (
                     <ListItem key={lang}>
-                      <TextField
-                        sx={style.text}
-                        label={lang}
-                        variant="outlined"
-                        defaultValue={content}
-                        multiline
-                        InputProps={{
-                          style: getTextStyle(textMutableRef.current, lang),
-                        }}
-                        onChange={e => (textMutableRef.current.localizations[lang] = e.target.value)}
+                      <TextLocalizationView
+                        lang={lang}
+                        text={textMutableRef.current}
+                        localization={localization}
+                        onChange={value => (textMutableRef.current.localizations[lang].content = value)}
+                        warnings={textWarnings}
+                        onUpdateWarning={handleUpdateWarning}
                       />
                     </ListItem>
                   );
@@ -190,15 +176,27 @@ export default Text;
 const style = {
   mainContainer: {
     display: 'flex',
+    width: 'fit-content',
     flexDirection: 'column',
-    justifyContent: 'flex-begin',
+    justifyContent: 'flex-start',
+  },
+  mainContainerBorder: {
+    borderRadius: 1,
+    boxShadow: 5,
   },
   previewContainer: {
     display: 'flex',
     flexDirection: 'raw',
-    justifyContent: 'flex-begin',
+    justifyContent: 'flex-start',
     padding: 0,
     margin: 0,
+  },
+  editContainer: {
+    width: 'fit-content',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
   },
   controlsContainer: {
     width: '100%',
@@ -206,19 +204,8 @@ const style = {
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  extraContainer: {
-    position: 'absolute',
-    top: 1024,
-    left: 1024,
-    width: 100,
-    height: 100,
-  },
-  border: {
-    borderRadius: 1,
-    boxShadow: 1,
-  },
   text: {
-    flex: 1,
+    width: 600,
     padding: 0,
     margin: 0,
   },
@@ -227,5 +214,8 @@ const style = {
     marginLeft: 2,
     marginRight: 2,
     marginBottom: 2,
+  },
+  warning: {
+    backgroundColor: '#ffd6c9',
   },
 };
