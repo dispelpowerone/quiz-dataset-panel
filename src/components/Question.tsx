@@ -2,7 +2,6 @@ import {
   Box,
   TextField,
 } from '@mui/material';
-import ImageIcon from '@mui/icons-material/Image';
 import CheckIcon from '@mui/icons-material/Check';
 import { useLocation } from 'react-router-dom';
 import Text from './Text';
@@ -67,12 +66,13 @@ export default Question;
 const style = {
   container: {
     width: '100%',
-    maxWidth: 640,
     bgcolor: 'background.paper',
     padding: 4,
-    margin: 2,
     borderRadius: 1,
     boxShadow: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-begin',
   },
   image: {
     height: 150,
@@ -84,7 +84,7 @@ const style = {
   },
   text: {
     flex: 1,
-    width: '100%',
+    width: 600,
     paddingBottom: 1,
     margin: 0,
   },
