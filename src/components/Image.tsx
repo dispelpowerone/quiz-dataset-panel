@@ -7,15 +7,9 @@ import {
   TextField,
   Button,
   Container,
-  List,
-  ListItem,
-  ListSubheader,
   Collapse,
-  Checkbox,
-  FormControlLabel,
   InputAdornment,
 } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import cloneDeep from 'lodash/cloneDeep';
 import { updateQuestionImage } from '../libs/dao';
 
@@ -28,11 +22,7 @@ export interface ImageProps {
   readonly editable: boolean
 }
 
-export function Image({
-  //questionId,
-  //image,
-}: ImageProps) {
-  const [isLoading, setIsLoading] = useState(false);
+export function Image() {
   const [editMode, setEditMode] = useState(false);
   const [actualImage, setActualImage] = useState(image);
   const mutableImageRef = useRef(image);
