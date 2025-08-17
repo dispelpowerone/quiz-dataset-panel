@@ -56,6 +56,18 @@ export function QuestionsPreview() {
     });
   };
 
+  const countTextWarnings = (text: PrebuildTest) => {
+    return text.warnings.filter(w => !w.is_manually_checked).length
+  };
+
+  const countQuestionWarnings = (question: PrebuildQuestion) => {
+    let count = countTextWarnings(question.text);
+    question.answers.forEach(answer => {
+      count += countTextWarnings(answer.text);
+    });
+    return count;
+  };
+
   const renderText = (textName: string, content) => {
     return (
       <TextField
@@ -95,7 +107,23 @@ export function QuestionsPreview() {
             </>
           }
           {renderText('TestId', question.test_id)}
-          {renderText('Text', question.text.localizations.EN.content)}
+          <TextField
+            label={'Text'}
+            defaultValue={question.text.localizations.EN.content}
+            sx={style.text}
+            variant='outlined'
+            disabled
+            multiline
+            InputProps={{
+              style: countQuestionWarnings(question) ? style.warning : null,
+            }}
+            InputLabelProps={{
+              style: {
+                color: 'black',
+                fontWeight: 1000,
+              },
+            }}
+          />
           <Container disableGutters sx={style.controlsContainer}>
             <Button
               sx={style.button}
@@ -148,5 +176,8 @@ const style = {
   },
   button: {
     marginRight: 0,
+  },
+  warning: {
+    backgroundColor: '#ffd6c9',
   },
 };
