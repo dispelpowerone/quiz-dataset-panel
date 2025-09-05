@@ -105,11 +105,6 @@ export function Text({
               }}
               InputProps={{
                 style: activeWarningsCount ? style.warning : null,
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <Checkbox disabled checked={textActual.is_manually_checked} />
-                  </InputAdornment>
-                ),
                 endAdornment: (
                   <InputAdornment position='end'>
                     {!editMode &&
@@ -144,6 +139,9 @@ export function Text({
               {/* Localizations */}
               <List subheader={<ListSubheader>Localizations</ListSubheader>} sx={{justifyContent: 'flex-start'}}>
                 {Object.entries(textMutableRef.current.localizations).map(([lang, localization]) => {
+                  if (localization === null) {
+                    return null;
+                  }
                   return (
                     <ListItem key={lang}>
                       <TextLocalizationView

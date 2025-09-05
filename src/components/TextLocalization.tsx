@@ -63,6 +63,7 @@ export function TextLocalizationView({
         variant='outlined'
         defaultValue={localization.content}
         multiline
+        maxRows={Infinity}
         InputProps={{
           style: activeWarningsCount ? style.warning : null,
         }}
@@ -112,6 +113,7 @@ export function TextWarningView({
         variant='outlined'
         defaultValue={warning.content}
         multiline
+        maxRows={Infinity}
         InputProps={{
           readOnly: true,
         }}

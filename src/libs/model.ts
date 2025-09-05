@@ -53,6 +53,7 @@ export interface PrebuildQuestion {
   answers: [PrebuildAnswer]
   image?: string
   audio?: string
+  comment_text?: PrebuildText
 }
 
 export interface PrebuildTest {

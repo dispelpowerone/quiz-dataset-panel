@@ -2,7 +2,7 @@ import {
   Box,
   TextField,
 } from '@mui/material';
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from '@mui/icons-material/CheckCircle';
 import { useLocation } from 'react-router-dom';
 import Text from './Text';
 import { PrebuildQuestion } from '../libs/model';
@@ -53,10 +53,11 @@ export function Question() {
       <Text name={'QuestionText'} text={question.text} />
       {question.answers.map((answer, index) =>
         <>
-          {answer.is_right_answer && <CheckIcon />}
+          {answer.is_right_answer && <CheckIcon color='success' fontSize='large' />}
           <Text name={`Answer ${index + 1}`} text={answer.text} />
         </>
       )}
+      {question.comment_text && <Text name={`Comment`} text={question.comment_text} />}
     </Box>
   );
 }
@@ -87,5 +88,8 @@ const style = {
     width: 600,
     paddingBottom: 1,
     margin: 0,
+  },
+  rightAnswerIcon: {
+    width: 100,
   },
 };
