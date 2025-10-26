@@ -11,26 +11,32 @@ import {
   Button,
 } from '@mui/material';
 import {
+  PrebuildText,
   PrebuildTextWarning,
-  TextLocalization,
 } from '../libs/model';
 import type { Language } from '../libs/model';
 
 
 export interface TextLocalizationViewProps {
+  readonly text: PrebuildText
   readonly lang: Language
-  readonly localization: TextLocalization
   readonly warnings: [PrebuildTextWarning]
   readonly onUpdateWarning: (value: PrebuildTextWarning) => void
   readonly onChange: (value: string) => void
+  readonly disabled: boolean
+  readonly highlighted: boolean
 }
 
+const emptyWarnings = [];
+
 export function TextLocalizationView({
+  text,
   lang,
-  localization,
-  warnings,
+  warnings = emptyWarnings,
   onUpdateWarning,
   onChange,
+  disabled = false,
+  highlighted = false,
 }: TextLocalizationViewProps) {
   const [extendedMode, setExtendedMode] = useState(false);
   const [localWarnings, setLocalWarnings] = useState([]);
@@ -38,11 +44,11 @@ export function TextLocalizationView({
 
   useEffect(() => {
     const temp = warnings.filter(
-      w => w.text_localization_id === localization.text_localization_id
+      w => w.text_localization_id === text.localizations[lang].text_localization_id
     );
     setLocalWarnings(temp);
     setActiveWarningsCount(temp.filter(w => !w.is_manually_checked).length);
-  }, [localization, warnings]);
+  }, [text, lang, warnings]);
 
   const handleSwitchWarnings = () => {
     setExtendedMode(!extendedMode)
@@ -61,13 +67,15 @@ export function TextLocalizationView({
         sx={style.text}
         label={lang}
         variant='outlined'
-        defaultValue={localization.content}
+        value={text.localizations[lang].content}
+        //defaultValue={localization.content}
         multiline
         maxRows={Infinity}
         InputProps={{
-          style: activeWarningsCount ? style.warning : null,
+          style: (activeWarningsCount || highlighted) ? style.warning : null,
         }}
         onChange={e => onChange(e.target.value)}
+        disabled={disabled}
       />
       <Button
         sx={getShowWarningsButtonStyle()}

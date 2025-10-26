@@ -1,6 +1,5 @@
 import {
   useState,
-  useRef,
   useEffect,
 } from 'react';
 import {
@@ -12,69 +11,59 @@ import {
   ListItem,
   ListSubheader,
   Collapse,
-  Checkbox,
   InputAdornment,
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import TextLocalizationView from './TextLocalization';
-import cloneDeep from 'lodash/cloneDeep';
-import { PrebuildText } from '../libs/model';
-import { updateText } from '../libs/dao';
+import { TextState } from '../libs/text';
 
 
 export interface TextProps {
   readonly name: string
-  readonly text: PrebuildText
+  readonly textState: TextState
+  readonly extendedMode: boolean
+  readonly setExtendedMode: (value: boolean) => void
 }
 
 export function Text({
   name,
-  text,
+  textState,
+  extendedMode,
+  setExtendedMode,
 }: TextProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [textActual, setTextActual] = useState(text);
   const [textWarnings, setTextWarnings] = useState([]);
   const [activeWarningsCount, setActiveWarningsCount] = useState(0);
-  const textMutableRef = useRef(text);
 
   useEffect(() => {
-    setTextWarnings(textActual.warnings);
-  }, [editMode, textActual]);
+    setTextWarnings(textState.actual.warnings);
+  }, [textState.actual]);
 
   useEffect(() => {
     setActiveWarningsCount(textWarnings.filter(w => !w.is_manually_checked).length);
   }, [textWarnings]);
 
   const handleEdit = () => {
-    textMutableRef.current = cloneDeep(textActual);
-    setEditMode(true);
+    setExtendedMode(true);
   };
 
   const handleCancel = () => {
-    setEditMode(false);
+    textState.rollbackUpdates();
+    setExtendedMode(false);
   };
 
   const handleSave = () => {
     setIsLoading(true);
-    updateText(textMutableRef.current).then(() => {
-      setTextActual(cloneDeep(textMutableRef.current));
-      setEditMode(false);
+    textState.commitUpdates().then(() => {
+      setExtendedMode(false);
       setIsLoading(false);
     }).catch(err => {
       console.error(err);
     });
   };
 
-  const handleUpdateWarning = (updatedWarning) => {
-    textMutableRef.current.warnings = textMutableRef.current.warnings.map(warning => {
-      return warning.text_warning_id === updatedWarning.text_warning_id ? updatedWarning : warning
-    });
-    setTextWarnings(textMutableRef.current.warnings);
-  };
-
   const getBoxStyle = () => {
-    if (!editMode) {
+    if (!extendedMode) {
       return style.mainContainer;
     }
     return {...style.mainContainer, ...style.mainContainerBorder};
@@ -95,7 +84,7 @@ export function Text({
               label={name}
               variant='outlined'
               multiline
-              value={textActual.localizations.EN.content}
+              value={textState.actual.localizations.EN.content}
               disabled
               InputLabelProps={{
                 style: {
@@ -106,14 +95,14 @@ export function Text({
               InputProps={{
                 style: activeWarningsCount ? style.warning : null,
                 endAdornment: (
-                  <InputAdornment position='end'>
-                    {!editMode &&
-                      <Button variant='contained' onClick={handleEdit}>EDIT</Button>
-                    }
-                    {editMode &&
-                      <Button variant='outlined' onClick={handleCancel}>CANCEL</Button>
-                    }
-                  </InputAdornment>
+                    <InputAdornment position='end'>
+                      {!extendedMode &&
+                        <Button variant='contained' onClick={handleEdit}>EDIT</Button>
+                      }
+                      {extendedMode &&
+                        <Button variant='outlined' onClick={handleCancel}>CANCEL</Button>
+                      }
+                    </InputAdornment>
                 ),
               }}
             />
@@ -121,7 +110,7 @@ export function Text({
         </ListItem>
         {/* Text editable view */}
         <ListItem key={'TextEditableView'}>
-          <Collapse in={editMode} sx={{ width: 'fit-content' }} timeout="auto" unmountOnExit>
+          <Collapse in={extendedMode} sx={{ width: 'fit-content' }} timeout='auto' unmountOnExit>
             <Container disableGutters sx={style.editContainer} maxWidth={false}>
               {/* Original */}
               <List subheader={<ListSubheader>Original</ListSubheader>}>
@@ -130,15 +119,18 @@ export function Text({
                     sx={style.text}
                     label={'EN'}
                     variant="outlined"
-                    defaultValue={textMutableRef.current.original?.EN.content}
+                    defaultValue={textState.mutable.original?.EN.content}
                     multiline
                     disabled
                   />
                 </ListItem>
               </List>
               {/* Localizations */}
-              <List subheader={<ListSubheader>Localizations</ListSubheader>} sx={{justifyContent: 'flex-start'}}>
-                {Object.entries(textMutableRef.current.localizations).map(([lang, localization]) => {
+              <List
+                subheader={<ListSubheader>Localizations</ListSubheader>}
+                sx={{justifyContent: 'flex-start'}}
+              >
+                {Object.entries(textState.mutable.localizations).map(([lang, localization]) => {
                   if (localization === null) {
                     return null;
                   }
@@ -146,11 +138,11 @@ export function Text({
                     <ListItem key={lang}>
                       <TextLocalizationView
                         lang={lang}
-                        text={textMutableRef.current}
+                        text={textState.mutable}
                         localization={localization}
-                        onChange={value => (textMutableRef.current.localizations[lang].content = value)}
+                        onChange={value => textState.updateLocale(lang, value)}
                         warnings={textWarnings}
-                        onUpdateWarning={handleUpdateWarning}
+                        onUpdateWarning={textState.updateWarning}
                       />
                     </ListItem>
                   );

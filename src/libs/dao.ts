@@ -6,7 +6,7 @@ import {
 
 
 //const endpoint = 'http://127.0.0.1:8000';
-const endpoint = 'http://192.168.1.33:8000';
+const endpoint = 'http://192.168.43.95:8000';
 
 async function fetchData(path: string, args?): Promise {
   const requestOptions = {
@@ -46,5 +46,11 @@ export async function updateQuestionImage(questionId: number, image: string): Pr
   await fetchData('/question/image/update', {
     question_id: questionId,
     image: image,
+  });
+}
+
+export async function searchMimicTexts(testId: number): Promise<Record<number, PrebuildText>> {
+  return await fetchData('/mimic_text/search', {
+    test_id: testId,
   });
 }

@@ -16,7 +16,13 @@ import {
   useNavigate,
 } from 'react-router-dom';
 import { PrebuildQuestion } from '../libs/model';
-import { fetchQuestions } from '../libs/dao';
+import {
+  fetchQuestions,
+  searchMimicTexts,
+} from '../libs/dao';
+import {
+  filterQuestionMimics,
+} from '../libs/text_mimic';
 
 
 export function QuestionsPreview() {
@@ -26,21 +32,23 @@ export function QuestionsPreview() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [questions, setQuestions] = useState();
+  const [mimicTexts, setMimicTexts] = useState();
 
   useEffect(() => {
-    fetchQuestions(testId).then(questions => {
-      if (questions) {
-        setQuestions(questions);
-        setIsLoading(false);
-      }
+    async function fetchData() {
+      setQuestions(await fetchQuestions(testId));
+      setMimicTexts(await searchMimicTexts(testId))
+      // Restore scroll position
       const scrollPosition = sessionStorage.getItem('questionsPreviewScrollPosition');
       if (scrollPosition) {
         setTimeout(() => {
-            window.scrollTo(0, parseInt(scrollPosition));
+          window.scrollTo(0, parseInt(scrollPosition));
         }, 0);
         sessionStorage.removeItem('questionsPreviewScrollPosition');
       }
-    });
+      setIsLoading(false);
+    }
+    fetchData();
   }, [testId]);
 
   if (isLoading) {
@@ -52,6 +60,7 @@ export function QuestionsPreview() {
     navigate('/Question', {
       state: {
         question: question,
+        mimicTexts: filterQuestionMimics(mimicTexts, question)
       },
     });
   };

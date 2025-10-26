@@ -37,7 +37,7 @@ export interface PrebuildText {
   text_id: number
   localizations: TextLocalizations
   original?: TextLocalizations
-  warnings: [PrebuildTextWarning]
+  warnings: PrebuildTextWarning[]
   is_manually_checked: boolean
 }
 
