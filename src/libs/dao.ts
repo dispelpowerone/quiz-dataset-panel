@@ -1,4 +1,5 @@
 import {
+  Domain,
   PrebuildText,
   PrebuildQuestion,
   PrebuildTest,
@@ -21,6 +22,17 @@ async function fetchData(path: string, args?): Promise {
   const response = await fetch(`${endpoint}${path}`, requestOptions);
   const data = await response.json();
   return data.payload;
+}
+
+export async function fetchDomains(): Promise<[Domain]> {
+  return [
+    {name: "on", description: "Ontario"},
+    {name: "bc", description: "British Columbia"},
+    {name: "ny", description: "New York"},
+    {name: "ca", description: "California"},
+    {name: "tx", description: "Texas"},
+    {name: "fl", description: "Florida"},
+  ];
 }
 
 export async function fetchTests(): Promise<[PrebuildTest]> {

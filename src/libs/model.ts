@@ -61,3 +61,8 @@ export interface PrebuildTest {
   title: PrebuildText
   position: number
 }
+
+export interface Domain {
+  name: string
+  description: string
+}
