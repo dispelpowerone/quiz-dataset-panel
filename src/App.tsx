@@ -8,21 +8,22 @@ import DomainsPreview from './components/DomainsPreview';
 import TestsPreview from './components/TestsPreview';
 import QuestionsPreview from './components/QuestionsPreview';
 import Question from './components/Question';
-import Boo from './screens/Boo';
+import DomainProvider from './contexts/DomainProvider';
 
 
 function App() {
   return (
-    <Router>
-      <CssBaseline />
-      <Routes>
-        <Route path='/' element={<DomainsPreview />} />
-        <Route path='/TestsPreview' element={<TestsPreview />}/>
-        <Route path='/QuestionsPreview' element={<QuestionsPreview />}/>
-        <Route path='/Question' element={<Question />}/>
-        <Route path='/Boo' element={<Boo />}/>
-      </Routes>
-    </Router>
+    <DomainProvider>
+      <Router>
+        <CssBaseline />
+        <Routes>
+          <Route path='/' element={<DomainsPreview />} />
+          <Route path='/TestsPreview' element={<TestsPreview />}/>
+          <Route path='/QuestionsPreview' element={<QuestionsPreview />}/>
+          <Route path='/Question' element={<Question />}/>
+        </Routes>
+      </Router>
+    </DomainProvider>
   );
 }
 
