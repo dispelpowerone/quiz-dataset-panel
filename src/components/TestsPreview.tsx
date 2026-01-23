@@ -13,16 +13,18 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { PrebuildTest } from '../libs/model';
 import { fetchTests } from '../libs/dao';
+import { useDomain } from '../contexts/DomainContext';
 
 
 export function TestsPreview() {
   const navigate = useNavigate();
+  const { domainName } = useDomain();
 
   const [isLoading, setIsLoading] = useState(true);
   const [tests, setTests] = useState();
 
   useEffect(() => {
-    fetchTests().then(tests => {
+    fetchTests(domainName).then(tests => {
       if (tests) {
         setTests(tests);
         setIsLoading(false);
@@ -35,7 +37,7 @@ export function TestsPreview() {
         sessionStorage.removeItem('testsPreviewScrollPosition');
       }
     });
-  }, []);
+  }, [domainName]);
 
   if (isLoading) {
     return <CircularProgress />;

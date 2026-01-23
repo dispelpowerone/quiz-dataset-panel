@@ -15,6 +15,7 @@ import {
   useLocation,
   useNavigate,
 } from 'react-router-dom';
+import { useDomain } from '../contexts/DomainContext';
 import { PrebuildQuestion } from '../libs/model';
 import {
   fetchQuestions,
@@ -29,6 +30,7 @@ export function QuestionsPreview() {
   const navigate = useNavigate();
   const location = useLocation();
   const testId = location.state.testId;
+  const { domainName } = useDomain();
 
   const [isLoading, setIsLoading] = useState(true);
   const [questions, setQuestions] = useState();
@@ -36,8 +38,8 @@ export function QuestionsPreview() {
 
   useEffect(() => {
     async function fetchData() {
-      setQuestions(await fetchQuestions(testId));
-      setMimicTexts(await searchMimicTexts(testId))
+      setQuestions(await fetchQuestions(domainName, testId));
+      setMimicTexts(await searchMimicTexts(domainName, testId))
       // Restore scroll position
       const scrollPosition = sessionStorage.getItem('questionsPreviewScrollPosition');
       if (scrollPosition) {
@@ -49,7 +51,7 @@ export function QuestionsPreview() {
       setIsLoading(false);
     }
     fetchData();
-  }, [testId]);
+  }, [testId, domainName]);
 
   if (isLoading) {
     return <CircularProgress />;

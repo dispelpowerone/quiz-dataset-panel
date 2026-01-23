@@ -6,6 +6,7 @@ import {
 import cloneDeep from 'lodash/cloneDeep';
 import { updateText } from '../libs/dao';
 import { PrebuildText, PrebuildTextWarning, Language } from '../libs/model';
+import { useDomain } from '../contexts/DomainContext';
 
 
 export interface TextState {
@@ -18,6 +19,7 @@ export interface TextState {
 }
 
 export function useTextState(text: PrebuildText): TextState {
+  const { domainName } = useDomain();
   const [actual, setActual] = useState(cloneDeep(text));
   const [mutable, setMutable] = useState(cloneDeep(text));
 
@@ -39,9 +41,9 @@ export function useTextState(text: PrebuildText): TextState {
   }, [mutable]);
 
   const commitUpdates = useCallback(async () => {
-    await updateText(mutable);
+    await updateText(domainName, mutable);
     setActual(mutable);
-  }, [mutable]);
+  }, [domainName, mutable]);
 
   const rollbackUpdates = useCallback(() => {
     setMutable(actual);

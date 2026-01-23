@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { DomainContext } from './DomainContext';
 
 export function DomainProvider({ children }) {
-  const [selectedDomain, setSelectedDomain] = useState(null);
+  const [domainName, setDomainName] = useState(null);
 
   return (
-    <DomainContext.Provider value={{ selectedDomain, setSelectedDomain }}>
+    <DomainContext.Provider value={{ domainName, setDomainName }}>
       {children}
     </DomainContext.Provider>
   );

@@ -35,20 +35,24 @@ export async function fetchDomains(): Promise<[Domain]> {
   ];
 }
 
-export async function fetchTests(): Promise<[PrebuildTest]> {
-  return await fetchData('/tests/get');
+export async function fetchTests(domainName: string): Promise<[PrebuildTest]> {
+  return await fetchData('/tests/get', {
+    domain: domainName,
+  });
 }
 
-export async function fetchQuestions(testId: number): Promise<[PrebuildQuestion]> {
+export async function fetchQuestions(domainName: string, testId: number): Promise<[PrebuildQuestion]> {
   console.assert(testId, `testId should be a number got ${testId}`);
   return await fetchData('/questions/get', {
+    domain: domainName,
     test_id: testId,
   });
 }
 
-export async function updateText(text: PrebuildText): Promise<void> {
+export async function updateText(domainName: string, text: PrebuildText): Promise<void> {
   console.assert(text !== undefined, `text argument should be defined`);
   await fetchData('/text/update', {
+    domain: domainName,
     text: text,
   });
 }
@@ -61,8 +65,9 @@ export async function updateQuestionImage(questionId: number, image: string): Pr
   });
 }
 
-export async function searchMimicTexts(testId: number): Promise<Record<number, PrebuildText>> {
+export async function searchMimicTexts(domainName: string, testId: number): Promise<Record<number, PrebuildText>> {
   return await fetchData('/mimic_text/search', {
+    domain: domainName,
     test_id: testId,
   });
 }

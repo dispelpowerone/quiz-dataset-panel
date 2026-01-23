@@ -44,7 +44,7 @@ const DomainItem = memo(({
 
 export function DomainsPreview() {
   const navigate = useNavigate();
-  const { setSelectedDomain } = useDomain();
+  const { setDomainName } = useDomain();
 
   const [isLoading, setIsLoading] = useState(true);
   const [domains, setDomains] = useState();
@@ -59,9 +59,9 @@ export function DomainsPreview() {
   }, []);
 
   const handleView = useCallback((domain: Domain) => {
-    setSelectedDomain(domain);
+    setDomainName(domain.name);
     navigate('/TestsPreview');
-  }, [navigate, setSelectedDomain]);
+  }, [navigate, setDomainName]);
 
   if (isLoading) {
     return <CircularProgress />;
