@@ -19,6 +19,7 @@ import { useDomain } from '../contexts/DomainContext';
 import { PrebuildQuestion } from '../libs/model';
 import {
   fetchQuestions,
+  getImageUrl,
   searchMimicTexts,
 } from '../libs/dao';
 import {
@@ -108,7 +109,7 @@ export function QuestionsPreview() {
               <Box
                 component='img'
                 sx={style.image}
-                src={`/public/images/${question.image}`}
+                src={getImageUrl(question.image)}
               />
               <Box
                 component='img'
