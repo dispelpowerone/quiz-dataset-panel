@@ -6,11 +6,11 @@ import {
 } from './model';
 
 
-//const endpoint = 'http://127.0.0.1:8000';
-const endpoint = 'http://192.168.43.95:8000';
+const endpoint = 'http://127.0.0.1:8000';
+//const endpoint = 'http://192.168.43.95:8000';
 
-export function getImageUrl(image: string): string {
-  return `${endpoint}/images/${domain}/${image}`;
+export function getImageUrl(domainName: string, image: string): string {
+  return `${endpoint}/images/${domainName}/${image}`;
 }
 
 async function fetchData(path: string, args?): Promise {

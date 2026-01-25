@@ -109,7 +109,7 @@ export function QuestionsPreview() {
               <Box
                 component='img'
                 sx={style.image}
-                src={getImageUrl(question.image)}
+                src={getImageUrl(domainName, question.image)}
               />
               <Box
                 component='img'
