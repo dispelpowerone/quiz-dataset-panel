@@ -14,7 +14,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { Domain } from '../libs/model';
 import { fetchDomains } from '../libs/dao';
-import { useDomain } from '../contexts/DomainContext';
 
 
 const DomainItem = memo(({
@@ -44,7 +43,6 @@ const DomainItem = memo(({
 
 export function DomainsPreview() {
   const navigate = useNavigate();
-  const { setDomainName } = useDomain();
 
   const [isLoading, setIsLoading] = useState(true);
   const [domains, setDomains] = useState();
@@ -59,9 +57,8 @@ export function DomainsPreview() {
   }, []);
 
   const handleView = useCallback((domain: Domain) => {
-    setDomainName(domain.name);
-    navigate('/TestsPreview');
-  }, [navigate, setDomainName]);
+    navigate(`${domain.name}/tests`);
+  }, [navigate]);
 
   if (isLoading) {
     return <CircularProgress />;

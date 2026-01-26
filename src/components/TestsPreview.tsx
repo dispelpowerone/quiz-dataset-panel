@@ -10,15 +10,14 @@ import {
   ListItem,
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PrebuildTest } from '../libs/model';
 import { fetchTests } from '../libs/dao';
-import { useDomain } from '../contexts/DomainContext';
 
 
 export function TestsPreview() {
   const navigate = useNavigate();
-  const { domainName } = useDomain();
+  const { domainName } = useParams();
 
   const [isLoading, setIsLoading] = useState(true);
   const [tests, setTests] = useState();
@@ -45,11 +44,7 @@ export function TestsPreview() {
 
   const handleView = (testId: number) => {
     sessionStorage.setItem('testsPreviewScrollPosition', window.pageYOffset);
-    navigate('/QuestionsPreview', {
-      state: {
-        testId: testId,
-      },
-    });
+    navigate(`${testId}/questions`);
   };
 
   const renderText = (textName: string, content) => {

@@ -12,10 +12,9 @@ import {
 } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 import {
-  useLocation,
+  useParams,
   useNavigate,
 } from 'react-router-dom';
-import { useDomain } from '../contexts/DomainContext';
 import { PrebuildQuestion } from '../libs/model';
 import {
   fetchQuestions,
@@ -29,9 +28,7 @@ import {
 
 export function QuestionsPreview() {
   const navigate = useNavigate();
-  const location = useLocation();
-  const testId = location.state.testId;
-  const { domainName } = useDomain();
+  const { domainName, testId } = useParams();
 
   const [isLoading, setIsLoading] = useState(true);
   const [questions, setQuestions] = useState();
@@ -60,7 +57,7 @@ export function QuestionsPreview() {
 
   const handleView = (question: PrebuildQuestion) => {
     sessionStorage.setItem('questionsPreviewScrollPosition', window.pageYOffset);
-    navigate('/Question', {
+    navigate(`${question.question_id}`, {
       state: {
         question: question,
         mimicTexts: filterQuestionMimics(mimicTexts, question)
