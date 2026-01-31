@@ -6,9 +6,10 @@ import {
   TextField,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/CheckCircle';
-import { useLocation } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import TextExtended from './TextExtended';
 import { PrebuildQuestion, PrebuildText } from '../libs/model';
+import { getImageUrl } from '../libs/dao';
 
 
 export function Question() {
@@ -16,13 +17,14 @@ export function Question() {
   const location = useLocation();
   const question: PrebuildQuestion = location.state.question;
   const mimicTexts: Record<number, PrebuildText> = location.state.mimicTexts;
+  const { domainName } = useParams();
 
   const renderImage = (image?: string) => {
     return (
       <>
         {image &&
           <>
-            <Box key='curImg' component='img' sx={style.image} src={`/public/images/${image}`} />
+            <Box key='curImg' component='img' sx={style.image} src={getImageUrl(domainName, image)} />
             <Box key='origImg' component='img' sx={style.image} src={`/public/images-orig/${image}`} />
           </>
         }
