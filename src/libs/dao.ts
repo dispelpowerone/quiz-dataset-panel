@@ -5,12 +5,11 @@ import {
   PrebuildTest,
 } from './model';
 
-
-const endpoint = 'http://127.0.0.1:8000';
-//const endpoint = 'http://192.168.43.95:8000';
+// Use local network endpoint
+const endpoint = 'http://pi.local';
 
 export function getImageUrl(domainName: string, image: string): string {
-  return `${endpoint}/images/${domainName}/${image}`;
+  return `${endpoint}/api/images/${domainName}/${image}`;
 }
 
 async function fetchData(path: string, args?): Promise {
@@ -23,7 +22,7 @@ async function fetchData(path: string, args?): Promise {
     body: args ? JSON.stringify(args) : '{}',
   };
 
-  const response = await fetch(`${endpoint}${path}`, requestOptions);
+  const response = await fetch(`${endpoint}/api/${path}`, requestOptions);
   const data = await response.json();
   return data.payload;
 }
@@ -40,14 +39,14 @@ export async function fetchDomains(): Promise<[Domain]> {
 }
 
 export async function fetchTests(domainName: string): Promise<[PrebuildTest]> {
-  return await fetchData('/tests/get', {
+  return await fetchData('tests/get', {
     domain: domainName,
   });
 }
 
 export async function fetchQuestions(domainName: string, testId: number): Promise<[PrebuildQuestion]> {
   console.assert(testId, `testId should be a number got ${testId}`);
-  return await fetchData('/questions/get', {
+  return await fetchData('questions/get', {
     domain: domainName,
     test_id: testId,
   });
@@ -55,7 +54,7 @@ export async function fetchQuestions(domainName: string, testId: number): Promis
 
 export async function updateText(domainName: string, text: PrebuildText): Promise<void> {
   console.assert(text !== undefined, `text argument should be defined`);
-  await fetchData('/text/update', {
+  await fetchData('text/update', {
     domain: domainName,
     text: text,
   });
@@ -63,14 +62,14 @@ export async function updateText(domainName: string, text: PrebuildText): Promis
 
 export async function updateQuestionImage(questionId: number, image: string): Promise<void> {
   console.assert(image !== undefined, `image argument should be defined`);
-  await fetchData('/question/image/update', {
+  await fetchData('question/image/update', {
     question_id: questionId,
     image: image,
   });
 }
 
 export async function searchMimicTexts(domainName: string, testId: number): Promise<Record<number, PrebuildText>> {
-  return await fetchData('/mimic_text/search', {
+  return await fetchData('mimic_text/search', {
     domain: domainName,
     test_id: testId,
   });
