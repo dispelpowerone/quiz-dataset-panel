@@ -1,0 +1,17 @@
+[Unit]
+Description=Quiz Dataset Panel Service
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/Workspace/quiz-dataset-panel
+# We use 'npx vite preview' to serve the built 'dist' folder
+# --host ensures it is accessible on your network, not just localhost
+ExecStart=/usr/bin/npx vite preview --host 0.0.0.0 --port 5173
+Restart=always
+# Vite environment variables if needed
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
