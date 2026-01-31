@@ -3,10 +3,10 @@ import {
   useCallback,
   useMemo,
 } from 'react';
+import { useParams } from 'react-router-dom';
 import cloneDeep from 'lodash/cloneDeep';
 import { updateText } from '../libs/dao';
 import { PrebuildText, PrebuildTextWarning, Language } from '../libs/model';
-import { useDomain } from '../contexts/DomainContext';
 
 
 export interface TextState {
@@ -19,7 +19,7 @@ export interface TextState {
 }
 
 export function useTextState(text: PrebuildText): TextState {
-  const { domainName } = useDomain();
+  const { domainName } = useParams();
   const [actual, setActual] = useState(cloneDeep(text));
   const [mutable, setMutable] = useState(cloneDeep(text));
 
