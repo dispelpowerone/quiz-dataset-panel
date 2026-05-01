@@ -3,13 +3,12 @@ import {
 } from 'react';
 import {
   Box,
-  TextField,
 } from '@mui/material';
 import CheckIcon from '@mui/icons-material/CheckCircle';
 import { useParams, useLocation } from 'react-router-dom';
 import TextExtended from './TextExtended';
+import QuestionImage from './QuestionImage';
 import { PrebuildQuestion, PrebuildText } from '../libs/model';
-import { getImageUrl } from '../libs/dao';
 
 
 export function Question() {
@@ -19,43 +18,10 @@ export function Question() {
   const mimicTexts: Record<number, PrebuildText> = location.state.mimicTexts;
   const { domainName } = useParams();
 
-  const renderImage = (image?: string) => {
-    return (
-      <>
-        {image &&
-          <>
-            <Box key='curImg' component='img' sx={style.image} src={getImageUrl(domainName, image)} />
-            <Box key='origImg' component='img' sx={style.image} src={`/public/images-orig/${image}`} />
-          </>
-        }
-      </>
-    );
-  };
-
-  const renderText = (textName: string, content) => {
-    return (
-      <TextField
-        label={textName}
-        defaultValue={content}
-        sx={style.text}
-        variant='outlined'
-        disabled
-        multiline
-        InputLabelProps={{
-          style: {
-            color: 'black',
-            fontWeight: 1000,
-          },
-        }}
-      />
-    );
-  }
-
   return (
     <Box sx={style.container}>
       <h2>Question #{question.question_id}</h2>
-      {renderImage(question.image)}
-      {renderText('Image', question.image)}
+      <QuestionImage domainName={domainName} image={question.image} />
       <TextExtended
         name={'QuestionText'}
         text={question.text}
@@ -90,20 +56,6 @@ const style = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-begin',
-  },
-  image: {
-    height: 150,
-    width: 375,
-    borderRadius: 1,
-    boxShadow: 1,
-    padding: 1,
-    marginBottom: 2,
-  },
-  text: {
-    flex: 1,
-    width: 600,
-    paddingBottom: 1,
-    margin: 0,
   },
   rightAnswerIcon: {
     width: 100,
