@@ -3,13 +3,15 @@ import {
   PrebuildText,
   PrebuildQuestion,
   PrebuildTest,
+  ImageUploadStatus,
 } from './model';
 
 // Use local network endpoint
 const endpoint = 'http://pi.local';
+const urlPrefix = '/api';
 
 export function getImageUrl(domainName: string, image: string): string {
-  return `${endpoint}/api/images/${domainName}/${image}`;
+  return `${endpoint}${urlPrefix}/images/${domainName}/${image}`;
 }
 
 async function fetchData(path: string, args?): Promise {
@@ -22,7 +24,7 @@ async function fetchData(path: string, args?): Promise {
     body: args ? JSON.stringify(args) : '{}',
   };
 
-  const response = await fetch(`${endpoint}/api/${path}`, requestOptions);
+  const response = await fetch(`${endpoint}${urlPrefix}/${path}`, requestOptions);
   const data = await response.json();
   return data.payload;
 }
@@ -60,12 +62,29 @@ export async function updateText(domainName: string, text: PrebuildText): Promis
   });
 }
 
-export async function updateQuestionImage(questionId: number, image: string): Promise<void> {
+export async function setQuestionImage(domainName: string, questionId: number, image: string): Promise<void> {
   console.assert(image !== undefined, `image argument should be defined`);
-  await fetchData('question/image/update', {
+  await fetchData('question/image/set', {
+    domain: domainName,
     question_id: questionId,
     image: image,
   });
+}
+
+export async function uploadQuestionImage(domainName: string, questionId: number, imageFile: File): Promise<ImageUploadStatus> {
+  const formData = new FormData();
+  formData.append("file", imageFile);
+  formData.append("domain", domainName);
+  formData.append("question_id", questionId);
+
+  const requestOptions = {
+    method: 'post',
+    body: formData,
+  };
+
+  const response = await fetch(`${endpoint}${urlPrefix}/question/image/upload`, requestOptions);
+  const data = await response.json();
+  return data.payload;
 }
 
 export async function searchMimicTexts(domainName: string, testId: number): Promise<Record<number, PrebuildText>> {

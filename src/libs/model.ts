@@ -66,3 +66,8 @@ export interface Domain {
   name: string
   description: string
 }
+
+export ImageUploadStatus {
+  image?: string | null
+  error_message?: string | null
+}

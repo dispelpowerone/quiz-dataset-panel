@@ -1,5 +1,7 @@
 import {
   Fragment,
+  useEffect,
+  useState,
 } from 'react';
 import {
   Box,
@@ -14,14 +16,43 @@ import { PrebuildQuestion, PrebuildText } from '../libs/model';
 export function Question() {
   // Params
   const location = useLocation();
-  const question: PrebuildQuestion = location.state.question;
+  const questionId: number = location.state.question.question_id;
   const mimicTexts: Record<number, PrebuildText> = location.state.mimicTexts;
   const { domainName } = useParams();
+
+  const [question, setQuestion] = useState<PrebuildQuestion>(() => {
+    // Check if we have saved data in storage first
+    const saved = localStorage.getItem(`question/${questionId}`);
+    return saved ? JSON.parse(saved) : location.state.question;
+  });
+
+  useEffect(() => {
+    localStorage.setItem(`question/${questionId}`, JSON.stringify(question));
+  }, [question]);
+
+  const handleImageUpdate = (image: string) => {
+    //question.image = image;
+    setQuestion(prev => {
+      return {
+        ...prev,
+        image: image,
+      };
+    });
+  };
+
+  if (!question) {
+    return null;
+  }
 
   return (
     <Box sx={style.container}>
       <h2>Question #{question.question_id}</h2>
-      <QuestionImage domainName={domainName} image={question.image} />
+      <QuestionImage
+        domainName={domainName}
+        questionId={question.question_id}
+        image={question.image}
+        onUpdate={handleImageUpdate}
+      />
       <TextExtended
         name={'QuestionText'}
         text={question.text}
