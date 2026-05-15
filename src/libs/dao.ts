@@ -7,7 +7,7 @@ import {
 } from './model';
 
 // Use local network endpoint
-const endpoint = 'http://pi.local';
+const endpoint = 'https://pi.local';
 const urlPrefix = '/api';
 
 export function getImageUrl(domainName: string, image: string): string {

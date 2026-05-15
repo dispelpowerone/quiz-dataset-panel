@@ -22,12 +22,13 @@ export function Question() {
 
   const [question, setQuestion] = useState<PrebuildQuestion>(() => {
     // Check if we have saved data in storage first
-    const saved = localStorage.getItem(`question/${questionId}`);
-    return saved ? JSON.parse(saved) : location.state.question;
+    // const saved = localStorage.getItem(`question/${questionId}`);
+    // return saved ? JSON.parse(saved) : location.state.question;
+    return location.state.question;
   });
 
   useEffect(() => {
-    localStorage.setItem(`question/${questionId}`, JSON.stringify(question));
+    // localStorage.setItem(`question/${questionId}`, JSON.stringify(question));
   }, [question]);
 
   const handleImageUpdate = (image: string) => {
