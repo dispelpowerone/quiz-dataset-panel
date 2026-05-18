@@ -74,6 +74,9 @@ export function QuestionsPreview() {
     question.answers.forEach(answer => {
       count += countTextWarnings(answer.text);
     });
+    if (question.comment_text) {
+      count += countTextWarnings(question.comment_text);
+    }
     return count;
   };
 
